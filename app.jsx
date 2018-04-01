@@ -136,8 +136,8 @@ class BaseThesaurus extends React.Component {
 					<label>
 						<div className="form-group">
 							<select className="form-control" id="sel1">
-								<option>Synonyms</option>
-								<option>Antonyms</option>
+								<option value="synonyms">Synonyms</option>
+								<option value="antonyms">Antonyms</option>
 							</select>
 						</div>
 					</label>
@@ -171,7 +171,41 @@ class AddCThesaurus extends React.Component {
 		event.preventDefault();
 		var TYPE = document.getElementById("sel2").value;
 		var ACTION = document.getElementById("sel3").value;
-		alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
+		if(ACTION === "add"){
+			$.ajax({
+					url: 'http://localhost:3000/words/',
+					type: "POST",
+					async: false,
+					data: {"word": this.state.value,
+							"type": TYPE,
+							"definition", this.state.value2},
+					success: function (data) {
+						console.log(data);
+					}, 
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert("Add Failed.");
+						alert(xhr.status);
+						alert(thrownError);
+					}
+			});
+		}
+		if(ACTION == "remove"){
+			$.ajax({
+					url: 'http://localhost:3000/words/' + this.state.value,
+					type: "DELETE",
+					async: false,
+					data: {"word": this.state.value},
+					success: function (data) {
+						console.log(data);
+					}, 
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert("Remove Failed.");
+						alert(xhr.status);
+						alert(thrownError);
+					}
+			});
+		
+		}
 	}
 	render() {
 		//var TYPE = document.getElementById("sel2").value;		
@@ -192,16 +226,16 @@ class AddCThesaurus extends React.Component {
 					<label>
 						<div className="form-group">
 							<select className="form-control" id="sel2">
-								<option>Synonym</option>
-								<option>Antonym</option>
+								<option value="synonyms">Synonym</option>
+								<option value="antonyms">Antonym</option>
 							</select>
 						</div>
 					</label>
 					<label>
 						<div className="form-group">
 							<select className="form-control" id="sel3">
-								<option>Add</option>
-								<option>Remove</option>
+								<option value="add" >Add</option>
+								<option value="remove">Remove</option>
 							</select>
 						</div>
 					</label>
