@@ -1,9 +1,11 @@
 {
-  "name": "a2",
+  "name": "a3",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "back/app.js",
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
@@ -20,18 +22,19 @@
     "babel-preset-react": "^6.24.1"
   },
   "scripts": {
+	"start": "babel app.jsx > app.js && node back/app.js", 
     "test": "echo \"Error: no test specified\" && exit 1",
-    "react": "./node_modules/.bin/babel app.jsx > app.js"
+    "react": "babel app.jsx > app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/csc309-18s/assignment-2-tsm.git"
+    "url": "git+https://github.com/csc309-18s/assignment-3-tsm.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "tsm",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/csc309-18s/assignment-2-tsm/issues"
+    "url": "https://github.com/csc309-18s/assignment-3-tsm/issues"
   },
-  "homepage": "https://github.com/csc309-18s/assignment-2-tsm#readme"
+  "homepage": "https://github.com/csc309-18s/assignment-3-tsm#readme"
 }

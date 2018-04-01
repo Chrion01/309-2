@@ -12,17 +12,12 @@ class BaseThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		//console.log("doc is " + document.getElementById('thesinput').value);
 		this.state.value = document.getElementById('thesinput').value;
 		var TYPE = document.getElementById("sel1").value.toLowerCase();
-		//console.log("state is " + this.state.value);						
+		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 		if (this.state.source === "sourceStandard") {
-			//alert('synonms for: ' + this.state.value + '\nFunctionality not implemented');
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
-			//REG.append('<li>An element</li>');
-			var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
-			//console.log(url);
 			$.ajax({
 				url: url,
 				type: "GET",
@@ -31,16 +26,9 @@ class BaseThesaurus extends React.Component {
 					"X-Mashape-Host": "wordsapiv1.p.mashape.com"
 				},
 				success: function (data) {
-					//alert("success")
-					//console.log(data)
-					//console.log(TYPE)
-					//console.log(data.antonyms)	
-					//console.log(data.antonyms.length)														
 					if (TYPE == "synonyms") {
-						//console.log("a")
 						var arrayLength = data.synonyms.length;
 					} else {
-						//console.log("b")
 						var arrayLength = data.antonyms.length;
 					}
 					if (arrayLength == 0) {
@@ -56,18 +44,11 @@ class BaseThesaurus extends React.Component {
 							lia.appendChild(document.createTextNode(data.antonyms[i]));
 							lia.value = data.antonyms[i];
 						}
-						lia.setAttribute("href", "#"); // added line
-						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
+						lia.setAttribute("href", "#");
+						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}");
 						li.appendChild(lia);
 						REG.appendChild(li);
-						//document.getElementById('thesinput').innerHTML = this.value;
-						//alert(myStringArray[i]);
-						//this.handleChange;this.handleSubmit
-						//Do something
 					}
-					//console.log(data)
-					//console.log(data.TYPE)
-					//console.log(data.TYPE[0])
 				}, error: function (xhr, ajaxOptions, thrownError) {
 					alert(xhr.status);
 					alert(thrownError);
@@ -77,32 +58,68 @@ class BaseThesaurus extends React.Component {
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			$.ajax({
-				url: 'http://localhost:3000/words/' + this.state.value + '/' + TYPE,
+				url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+
 				type: "GET",
 				async: false,
 				success: function (data) {
-					var arrayLength = data.definition.length;
-					if (arrayLength == 0) {
-						REG.append("There are no results for this search");
+					if (data.definition == null) {
+						$.ajax({
+							url: url,
+							type: "GET",
+							async: false,
+							headers: {
+								"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
+								"X-Mashape-Host": "wordsapiv1.p.mashape.com"
+							},
+							success: function (data2) {
+								if (TYPE == "synonyms") {
+									var arrayLength = data2.synonyms.length;
+								} else {
+									var arrayLength = data2.antonyms.length;
+								}
+								if (arrayLength == 0) {
+									REG.append("There are no results for this search");
+								}
+								for (var i = 0; i < arrayLength; i++) {
+									var li = document.createElement("li");
+									var lia = document.createElement("a");
+									if (TYPE == "synonyms") {
+										lia.appendChild(document.createTextNode(data2.synonyms[i]));
+										lia.value = data2.synonyms[i];
+									} else {
+										lia.appendChild(document.createTextNode(data2.antonyms[i]));
+										lia.value = data2.antonyms[i];
+									}
+									lia.setAttribute("href", "#");
+									lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}");
+									li.appendChild(lia);
+									REG.appendChild(li);
+								}
+							}, error: function (xhr, ajaxOptions, thrownError) {
+								alert(xhr.status);
+								alert(thrownError);
+							}
+						});
+					} else {
+						var arrayLength = data.definition.length;
+						if (arrayLength == 0) {
+							REG.append("There are no results for this search");
+						}
+						for (var i = 0; i < arrayLength; i++) {
+							var li = document.createElement("li");
+							var lia = document.createElement("a");
+							lia.appendChild(document.createTextNode(data.definition[i]));
+							lia.value = data.definition[i];
+							lia.setAttribute("href", "#");
+							lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}");
+							li.appendChild(lia);
+							REG.appendChild(li);
+						}
 					}
-					for (var i = 0; i < arrayLength; i++) {
-						var li = document.createElement("li");
-						var lia = document.createElement("a");
-						lia.appendChild(document.createTextNode(data.definition[i]));
-						lia.value = data.definition[i];
-						lia.setAttribute("href", "#"); // added line
-						lia.setAttribute("onClick", "{document.getElementById('thesinput').value = this.value}"); // added line						
-						li.appendChild(lia);
-						REG.appendChild(li);
-					}
-					console.log(data);
 				},
-				error: function (xhr, ajaxOptions, thrownError) {
-					alert(xhr.status);
-					alert(thrownError);
-				}
+				error: function (xhr, ajaxOptions, thrownError) {}
 			});
-			//alert(TYPE + ' for: ' + this.state.value + ' from custom thesaurus\n Functionality not implemented');
 		}
 	}
 	handleSourceChange(event) {
@@ -193,13 +210,137 @@ class AddCThesaurus extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault();
-		var TYPE = document.getElementById("sel2").value;
+		var TYPE = document.getElementById("sel2").value.toLowerCase();
 		var ACTION = document.getElementById("sel3").value;
-		alert(ACTION + ': ' + this.state.value2 + '\n' + TYPE + ' of: ' + this.state.value + '\nFunctionality not implemented');
+		var newDefinition = new Array();
+		var wordvar = "";
+		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
+
+		$.ajax({
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+			type: "GET",
+			async: false,
+			success: function (data) {
+				if (data.definition == null) {
+					$.ajax({
+						url: url,
+						type: "GET",
+						async: false,
+						headers: {
+							"X-Mashape-Key": "eWPyp4Sb8PmshOFdZAJKFbiI20NOp1oLR32jsnYjBkLwt5qmJg",
+							"X-Mashape-Host": "wordsapiv1.p.mashape.com"
+						},
+						success: function (data) {
+							if (TYPE == "synonyms") {
+								var arrayLength = data.synonyms.length;
+							} else {
+								var arrayLength = data.antonyms.length;
+							}
+							for (var i = 0; i < arrayLength; i++) {
+								if (TYPE == "synonyms") {
+									newDefinition[i] = data.synonyms[i];
+								} else {
+									newDefinition[i] = data.antonyms[i];
+								}
+							}
+							wordvar = data.word;
+						}, error: function (xhr, ajaxOptions, thrownError) {
+							alert(xhr.status);
+							alert(thrownError);
+						}
+					});
+					$.ajax({
+						url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
+						type: "POST",
+						async: false,
+						headers: { contentType: "application/json" },
+						data: {
+							"word": wordvar,
+							"type": TYPE,
+							"definition": newDefinition
+						},
+						success: function (data) {
+							console.log("Added new entry");
+						},
+						error: function (xhr, ajaxOptions, thrownError) {
+							alert(xhr.status);
+							alert(thrownError);
+						}
+					});
+				} else {
+					newDefinition = data.definition;
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+		var EXIST = false;
+		for (var i = 0; i < newDefinition.length; i++) {
+			if (newDefinition[i] == this.state.value2) {
+				EXIST = true;
+			}
+		}
+		console.log(newDefinition);
+		console.log(EXIST);
+		if (ACTION == "Add") {
+			if (EXIST == true) {
+				alert("Definition already exists!");
+			} else {
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					type: "PUT",
+					async: false,
+					headers: { contentType: "application/json" },
+					data: { "definition": newDefinition.concat([this.state.value2]) },
+					success: function (data) {
+						alert("Successfully added " + this.state.value2 + " to custom thesaurus.");
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			}
+		}
+		if (ACTION == "Remove") {
+			if (this.state.value2 == '') {
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value,
+					type: "DELETE",
+					async: false,
+					success: function (data) {
+						alert("Delete success!");
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			} else if (EXIST == false) {
+				alert("Definition doesn't exist!");
+			} else {
+				newDefinition.splice(newDefinition.indexOf(this.state.value2), 1);
+				$.ajax({
+					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					type: "PUT",
+					async: false,
+					data: {
+						"definition": newDefinition
+					},
+					success: function (data) {
+						alert("Successfully removed " + this.state.value2 + " from custom thesaurus.");
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			}
+		}
 	}
 	render() {
-		//var TYPE = document.getElementById("sel2").value;		
-		//var ACTION = document.getElementById("sel3").value;		
 		return React.createElement(
 			'div',
 			{ className: 'bt' },
@@ -244,12 +385,12 @@ class AddCThesaurus extends React.Component {
 							React.createElement(
 								'option',
 								null,
-								'Synonym'
+								'Synonyms'
 							),
 							React.createElement(
 								'option',
 								null,
-								'Antonym'
+								'Antonyms'
 							)
 						)
 					)
@@ -354,6 +495,11 @@ class WelcomePage extends React.Component {
 								React.createElement(
 									'p',
 									null,
+									'To remove the entire word from the custom thesaurus, type in the word and leave the Synonyms/Antonyms field blank.'
+								),
+								React.createElement(
+									'p',
+									null,
 									'The Use Thesaurus tab allows the user to find synonyms and antonyms based on the thesaurus provided by wordAPI or their own custom thesaurus based on the radio buttons. Simply input a word in the textbox, select from Standard or Custom Thesaurus to look up from and select Synonym or Antonym from the dropdown list and press search.'
 								),
 								React.createElement(
@@ -407,7 +553,6 @@ class BaseFunction extends React.Component {
 		CUS.classList.remove("active");
 		var THES = document.getElementById("thes");
 		THES.classList.remove("active");
-		//console.log('Home');
 	}
 	handleRgClick() {
 		this.setState({ job: 1 });
@@ -417,7 +562,6 @@ class BaseFunction extends React.Component {
 		HOME.classList.remove("active");
 		var CUS = document.getElementById("cus");
 		CUS.classList.remove("active");
-		//console.log('Reg');
 	}
 	handleCClick() {
 		this.setState({ job: 2 });
@@ -427,19 +571,15 @@ class BaseFunction extends React.Component {
 		HOME.classList.remove("active");
 		var THES = document.getElementById("thes");
 		THES.classList.remove("active");
-		//console.log('Cust');
 	}
 	changePassword() {
-		console.log(document.getElementById("newpass").value);
 		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value) {
-			//console.log(document.getElementById("newpassconf").value);
 			$.ajax({
-				url: 'http://localhost:3000/changepassword',
+				url: 'https://tsm-custom-thesaurus.herokuapp.com/changepassword',
 				type: "PUT",
 				async: false,
 				data: { password: document.getElementById("newpass").value },
 				success: function (data) {
-					console.log(data);
 					alert("Password updated successfully!");
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
@@ -455,11 +595,10 @@ class BaseFunction extends React.Component {
 	componentDidMount() {
 		var result = '';
 		$.ajax({
-			url: 'http://localhost:3000/welcome',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/welcome',
 			type: "GET",
 			async: false,
 			success: function (data) {
-				console.log(data);
 				result = data;
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -467,7 +606,6 @@ class BaseFunction extends React.Component {
 				alert(thrownError);
 			}
 		});
-		console.log(result);
 		document.getElementById("username").innerHTML = "TSM Custom Thesaurus <br/> Logged in as: " + result;
 	}
 	render() {
@@ -480,7 +618,6 @@ class BaseFunction extends React.Component {
 		} else if (job == 2) {
 			page = React.createElement(AddCThesaurus, null);
 		} else {
-			//log out function here
 			page = React.createElement(Login, null);
 		}
 		return React.createElement(
@@ -726,7 +863,7 @@ class MainPage extends React.Component {
 	login() {
 		var result = "";
 		$.ajax({
-			url: 'http://localhost:3000/login',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/login',
 			type: "POST",
 			async: false,
 			data: {
@@ -734,7 +871,6 @@ class MainPage extends React.Component {
 				"password": this.state.f2
 			},
 			success: function (data) {
-				console.log(data);
 				result = "true";
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -743,19 +879,17 @@ class MainPage extends React.Component {
 				alert(thrownError);
 			}
 		});
-		console.log(this.state.f1, this.state.f2);
 		if (result == "true") {
 			this.setState({ login: true });
 		}
 	}
 	register() {
 		this.setState({ register: true });
-		console.log(this.state.f1, this.state.f2);
 	}
 	registerfinish() {
 		this.setState({ register: false });
 		$.ajax({
-			url: 'http://localhost:3000/register',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/register',
 			type: "POST",
 			async: false,
 			data: {
@@ -763,28 +897,23 @@ class MainPage extends React.Component {
 				"password": this.state.f2
 			},
 			success: function (data) {
-				console.log(data);
 				alert("Register Success!");
 				window.location.reload();
-				//this.setState({ login: true });
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
-				//alert(body);
 				alert("Register Failed!");
 				alert(xhr.status);
 				alert(thrownError);
 			}
 		});
-		console.log(this.state.f1, this.state.f2);
 	}
 	logout() {
 		this.setState({ login: false });
 		$.ajax({
-			url: 'http://localhost:3000/logout',
+			url: 'https://tsm-custom-thesaurus.herokuapp.com/logout',
 			type: "POST",
 			async: false,
 			success: function (data) {
-				console.log(data);
 				window.location.reload();
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -792,7 +921,6 @@ class MainPage extends React.Component {
 				alert(thrownError);
 			}
 		});
-		//console.log('logout');
 	}
 	getf1() {
 		return this.state.f1;
@@ -816,9 +944,6 @@ class MainPage extends React.Component {
 		);
 	}
 }
-// This asks ReactDOM to add the component SimpleWidget
-// Note the JSX for specifiying a React component
 
 ReactDOM.render(React.createElement(MainPage, null), document.getElementById('root'));
-//ReactDOM.render(<Bottom />, document.getElementById('bottom'));
 
