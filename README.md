@@ -1,1 +1,1 @@
-Project to build a customisable thesaurus. Pulls from online api.
+Project to build a customisable online thesaurus. Pulls from online api.
