@@ -1,1 +1,1 @@
-# assignment-3-tsm
+Project to build a customisable thesaurus. Pulls from online api.
