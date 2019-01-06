@@ -58,7 +58,7 @@ class BaseThesaurus extends React.Component {
 			var REG = document.getElementById("returnReg");
 			REG.innerHTML = "";
 			$.ajax({
-				url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+				url: 'https://tsm-cc.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 
 				type: "GET",
 				async: false,
@@ -217,7 +217,7 @@ class AddCThesaurus extends React.Component {
 		var url = 'https://wordsapiv1.p.mashape.com/words/' + this.state.value + '/' + TYPE;
 
 		$.ajax({
-			url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+			url: 'https://tsm-cc.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 			type: "GET",
 			async: false,
 			success: function (data) {
@@ -250,7 +250,7 @@ class AddCThesaurus extends React.Component {
 						}
 					});
 					$.ajax({
-						url: 'https://tsm-custom-thesaurus.herokuapp.com/words',
+						url: 'https://tsm-cc.herokuapp.com/words',
 						type: "POST",
 						async: false,
 						headers: { contentType: "application/json" },
@@ -289,7 +289,7 @@ class AddCThesaurus extends React.Component {
 				alert("Definition already exists!");
 			} else {
 				$.ajax({
-					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					url: 'https://tsm-cc.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
 					async: false,
 					headers: { contentType: "application/json" },
@@ -307,7 +307,7 @@ class AddCThesaurus extends React.Component {
 		if (ACTION == "Remove") {
 			if (this.state.value2 == '') {
 				$.ajax({
-					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value,
+					url: 'https://tsm-cc.herokuapp.com/words/' + this.state.value,
 					type: "DELETE",
 					async: false,
 					success: function (data) {
@@ -323,7 +323,7 @@ class AddCThesaurus extends React.Component {
 			} else {
 				newDefinition.splice(newDefinition.indexOf(this.state.value2), 1);
 				$.ajax({
-					url: 'https://tsm-custom-thesaurus.herokuapp.com/words/' + this.state.value + '/' + TYPE,
+					url: 'https://tsm-cc.herokuapp.com/words/' + this.state.value + '/' + TYPE,
 					type: "PUT",
 					async: false,
 					data: {
@@ -575,7 +575,7 @@ class BaseFunction extends React.Component {
 	changePassword() {
 		if (document.getElementById("newpass").value === document.getElementById("newpassconf").value) {
 			$.ajax({
-				url: 'https://tsm-custom-thesaurus.herokuapp.com/changepassword',
+				url: 'https://tsm-cc.herokuapp.com/changepassword',
 				type: "PUT",
 				async: false,
 				data: { password: document.getElementById("newpass").value },
@@ -595,7 +595,7 @@ class BaseFunction extends React.Component {
 	componentDidMount() {
 		var result = '';
 		$.ajax({
-			url: 'https://tsm-custom-thesaurus.herokuapp.com/welcome',
+			url: 'https://tsm-cc.herokuapp.com/welcome',
 			type: "GET",
 			async: false,
 			success: function (data) {
@@ -863,7 +863,7 @@ class MainPage extends React.Component {
 	login() {
 		var result = "";
 		$.ajax({
-			url: 'https://tsm-custom-thesaurus.herokuapp.com/login',
+			url: 'https://tsm-cc.herokuapp.com/login',
 			type: "POST",
 			async: false,
 			data: {
@@ -889,7 +889,7 @@ class MainPage extends React.Component {
 	registerfinish() {
 		this.setState({ register: false });
 		$.ajax({
-			url: 'https://tsm-custom-thesaurus.herokuapp.com/register',
+			url: 'https://tsm-cc.herokuapp.com/register',
 			type: "POST",
 			async: false,
 			data: {
@@ -910,7 +910,7 @@ class MainPage extends React.Component {
 	logout() {
 		this.setState({ login: false });
 		$.ajax({
-			url: 'https://tsm-custom-thesaurus.herokuapp.com/logout',
+			url: 'https://tsm-cc.herokuapp.com/logout',
 			type: "POST",
 			async: false,
 			success: function (data) {
